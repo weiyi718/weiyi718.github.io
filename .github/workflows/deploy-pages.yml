@@ -207,6 +207,7 @@ jobs:
 
           python3 - <<'PY'
           from pathlib import Path
+          import re
 
           old = "https://shengji-machinery.wp199063.chatgpt.site"
           new = "https://weiyi718.github.io"
@@ -227,12 +228,26 @@ jobs:
                   raise SystemExit(f"Expected source origin was not found in {relative}")
               with path.open("w", encoding="utf-8", newline="\n") as handle:
                   handle.write(content.replace(old, new))
+
+          cloudflare_injection = re.compile(
+              r'\s*<script>\(function\(\)\{function c\(\).*?'
+              r'/cdn-cgi/challenge-platform/scripts/jsd/main\.js.*?</script>',
+              re.DOTALL,
+          )
+          for path in Path("_site").rglob("*.html"):
+              content = path.read_text(encoding="utf-8")
+              content = cloudflare_injection.sub("", content)
+              if "/cdn-cgi/" in content:
+                  raise SystemExit(f"Unexpected Cloudflare injection remains in {path}")
+              with path.open("w", encoding="utf-8", newline="\n") as handle:
+                  handle.write(content)
           PY
 
           touch _site/.nojekyll
           test "$(find _site -type f | wc -l)" -eq 167
           test "$(find _site/assets -type f | wc -l)" -eq 152
           ! grep -R --fixed-strings "shengji-machinery.wp199063.chatgpt.site" _site
+          ! grep -R --fixed-strings "/cdn-cgi/" _site
           grep -q --fixed-strings "https://weiyi718.github.io/zh/" _site/index.html
 
       - name: Configure GitHub Pages
@@ -255,5 +270,4 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-
 
