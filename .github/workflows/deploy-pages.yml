@@ -1,0 +1,259 @@
+name: Deploy Shengji Machinery
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download verified static site
+        env:
+          SOURCE_ORIGIN: https://shengji-machinery.wp199063.chatgpt.site
+          TARGET_ORIGIN: https://weiyi718.github.io
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          rm -rf _site
+          mkdir -p _site
+
+          while IFS= read -r path; do
+            [ -n "$path" ] || continue
+            mkdir -p "_site/$(dirname "$path")"
+            curl --fail --show-error --silent --location \
+              --retry 5 --retry-all-errors --retry-delay 2 \
+              --connect-timeout 20 --max-time 120 \
+              "${SOURCE_ORIGIN}/${path}" -o "_site/${path}"
+          done <<'FILES'
+          404.html
+          app.js
+          assets/cutouts/sj-1-card.webp
+          assets/cutouts/sj-1-hero.webp
+          assets/cutouts/sj-1.webp
+          assets/cutouts/sj-10-card.webp
+          assets/cutouts/sj-10.webp
+          assets/cutouts/sj-11-card.webp
+          assets/cutouts/sj-11.webp
+          assets/cutouts/sj-2-card.webp
+          assets/cutouts/sj-2.webp
+          assets/cutouts/sj-3-card.webp
+          assets/cutouts/sj-3.webp
+          assets/cutouts/sj-4-card.webp
+          assets/cutouts/sj-4.webp
+          assets/cutouts/sj-5-card.webp
+          assets/cutouts/sj-5.webp
+          assets/cutouts/sj-6-card.webp
+          assets/cutouts/sj-6.webp
+          assets/cutouts/sj-7-card.webp
+          assets/cutouts/sj-7.webp
+          assets/cutouts/sj-8-card.webp
+          assets/cutouts/sj-8.webp
+          assets/cutouts/sj-9-card.webp
+          assets/cutouts/sj-9.webp
+          assets/products/sj-1/cover.webp
+          assets/products/sj-1/gallery-02.webp
+          assets/products/sj-1/gallery-03.webp
+          assets/products/sj-1/gallery-04.webp
+          assets/products/sj-1/gallery-05.webp
+          assets/products/sj-1/gallery-06.webp
+          assets/products/sj-1/gallery-07.webp
+          assets/products/sj-1/gallery-08.webp
+          assets/products/sj-1/gallery-09.webp
+          assets/products/sj-1/gallery-10.webp
+          assets/products/sj-1/gallery-11.webp
+          assets/products/sj-1/gallery-12.webp
+          assets/products/sj-1/thumbs/cover.webp
+          assets/products/sj-1/thumbs/gallery-02.webp
+          assets/products/sj-1/thumbs/gallery-03.webp
+          assets/products/sj-1/thumbs/gallery-04.webp
+          assets/products/sj-1/thumbs/gallery-05.webp
+          assets/products/sj-1/thumbs/gallery-06.webp
+          assets/products/sj-1/thumbs/gallery-07.webp
+          assets/products/sj-1/thumbs/gallery-08.webp
+          assets/products/sj-1/thumbs/gallery-09.webp
+          assets/products/sj-1/thumbs/gallery-10.webp
+          assets/products/sj-1/thumbs/gallery-11.webp
+          assets/products/sj-1/thumbs/gallery-12.webp
+          assets/products/sj-10/cover.webp
+          assets/products/sj-10/gallery-02.webp
+          assets/products/sj-10/gallery-03.webp
+          assets/products/sj-10/gallery-04.webp
+          assets/products/sj-10/thumbs/cover.webp
+          assets/products/sj-10/thumbs/gallery-02.webp
+          assets/products/sj-10/thumbs/gallery-03.webp
+          assets/products/sj-10/thumbs/gallery-04.webp
+          assets/products/sj-11/cover.webp
+          assets/products/sj-11/thumbs/cover.webp
+          assets/products/sj-2/cover.webp
+          assets/products/sj-2/gallery-02.webp
+          assets/products/sj-2/gallery-03.webp
+          assets/products/sj-2/gallery-04.webp
+          assets/products/sj-2/gallery-05.webp
+          assets/products/sj-2/gallery-06.webp
+          assets/products/sj-2/gallery-07.webp
+          assets/products/sj-2/thumbs/cover.webp
+          assets/products/sj-2/thumbs/gallery-02.webp
+          assets/products/sj-2/thumbs/gallery-03.webp
+          assets/products/sj-2/thumbs/gallery-04.webp
+          assets/products/sj-2/thumbs/gallery-05.webp
+          assets/products/sj-2/thumbs/gallery-06.webp
+          assets/products/sj-2/thumbs/gallery-07.webp
+          assets/products/sj-3/cover.webp
+          assets/products/sj-3/gallery-02.webp
+          assets/products/sj-3/gallery-03.webp
+          assets/products/sj-3/gallery-04.webp
+          assets/products/sj-3/gallery-05.webp
+          assets/products/sj-3/thumbs/cover.webp
+          assets/products/sj-3/thumbs/gallery-02.webp
+          assets/products/sj-3/thumbs/gallery-03.webp
+          assets/products/sj-3/thumbs/gallery-04.webp
+          assets/products/sj-3/thumbs/gallery-05.webp
+          assets/products/sj-4/cover.webp
+          assets/products/sj-4/gallery-02.webp
+          assets/products/sj-4/gallery-03.webp
+          assets/products/sj-4/thumbs/cover.webp
+          assets/products/sj-4/thumbs/gallery-02.webp
+          assets/products/sj-4/thumbs/gallery-03.webp
+          assets/products/sj-5/cover.webp
+          assets/products/sj-5/gallery-02.webp
+          assets/products/sj-5/gallery-03.webp
+          assets/products/sj-5/gallery-04.webp
+          assets/products/sj-5/gallery-05.webp
+          assets/products/sj-5/gallery-06.webp
+          assets/products/sj-5/gallery-07.webp
+          assets/products/sj-5/gallery-08.webp
+          assets/products/sj-5/gallery-09.webp
+          assets/products/sj-5/thumbs/cover.webp
+          assets/products/sj-5/thumbs/gallery-02.webp
+          assets/products/sj-5/thumbs/gallery-03.webp
+          assets/products/sj-5/thumbs/gallery-04.webp
+          assets/products/sj-5/thumbs/gallery-05.webp
+          assets/products/sj-5/thumbs/gallery-06.webp
+          assets/products/sj-5/thumbs/gallery-07.webp
+          assets/products/sj-5/thumbs/gallery-08.webp
+          assets/products/sj-5/thumbs/gallery-09.webp
+          assets/products/sj-6/cover.webp
+          assets/products/sj-6/gallery-02.webp
+          assets/products/sj-6/gallery-03.webp
+          assets/products/sj-6/gallery-04.webp
+          assets/products/sj-6/gallery-05.webp
+          assets/products/sj-6/thumbs/cover.webp
+          assets/products/sj-6/thumbs/gallery-02.webp
+          assets/products/sj-6/thumbs/gallery-03.webp
+          assets/products/sj-6/thumbs/gallery-04.webp
+          assets/products/sj-6/thumbs/gallery-05.webp
+          assets/products/sj-7/cover.webp
+          assets/products/sj-7/gallery-02.webp
+          assets/products/sj-7/gallery-03.webp
+          assets/products/sj-7/thumbs/cover.webp
+          assets/products/sj-7/thumbs/gallery-02.webp
+          assets/products/sj-7/thumbs/gallery-03.webp
+          assets/products/sj-8/cover.webp
+          assets/products/sj-8/gallery-02.webp
+          assets/products/sj-8/gallery-03.webp
+          assets/products/sj-8/gallery-04.webp
+          assets/products/sj-8/gallery-05.webp
+          assets/products/sj-8/gallery-06.webp
+          assets/products/sj-8/gallery-07.webp
+          assets/products/sj-8/gallery-08.webp
+          assets/products/sj-8/thumbs/cover.webp
+          assets/products/sj-8/thumbs/gallery-02.webp
+          assets/products/sj-8/thumbs/gallery-03.webp
+          assets/products/sj-8/thumbs/gallery-04.webp
+          assets/products/sj-8/thumbs/gallery-05.webp
+          assets/products/sj-8/thumbs/gallery-06.webp
+          assets/products/sj-8/thumbs/gallery-07.webp
+          assets/products/sj-8/thumbs/gallery-08.webp
+          assets/products/sj-9/cover.webp
+          assets/products/sj-9/gallery-02.webp
+          assets/products/sj-9/gallery-03.webp
+          assets/products/sj-9/thumbs/cover.webp
+          assets/products/sj-9/thumbs/gallery-02.webp
+          assets/products/sj-9/thumbs/gallery-03.webp
+          assets/site/application-edge-560.webp
+          assets/site/application-edge-960.webp
+          assets/site/application-eva-560.webp
+          assets/site/application-eva-960.webp
+          assets/site/batch-delivery-560.webp
+          assets/site/batch-delivery-960.webp
+          assets/site/batch-delivery.webp
+          assets/site/foam-sample-cutaway.webp
+          assets/site/foam-sample-rounded.webp
+          en/index.html
+          index.html
+          locales/en.js
+          locales/ru.js
+          locales/vi.js
+          locales/zh.js
+          robots.txt
+          ru/index.html
+          sitemap.xml
+          styles.css
+          vi/index.html
+          zh/index.html
+          FILES
+
+          python3 - <<'PY'
+          from pathlib import Path
+
+          old = "https://shengji-machinery.wp199063.chatgpt.site"
+          new = "https://weiyi718.github.io"
+          targets = [
+              "index.html",
+              "zh/index.html",
+              "en/index.html",
+              "vi/index.html",
+              "ru/index.html",
+              "robots.txt",
+              "sitemap.xml",
+          ]
+
+          for relative in targets:
+              path = Path("_site") / relative
+              content = path.read_text(encoding="utf-8")
+              if old not in content:
+                  raise SystemExit(f"Expected source origin was not found in {relative}")
+              with path.open("w", encoding="utf-8", newline="\n") as handle:
+                  handle.write(content.replace(old, new))
+          PY
+
+          touch _site/.nojekyll
+          test "$(find _site -type f | wc -l)" -eq 167
+          test "$(find _site/assets -type f | wc -l)" -eq 152
+          ! grep -R --fixed-strings "shengji-machinery.wp199063.chatgpt.site" _site
+          grep -q --fixed-strings "https://weiyi718.github.io/zh/" _site/index.html
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+
